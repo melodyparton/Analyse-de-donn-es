@@ -7,7 +7,7 @@ library(FactoMineR)
 library(factoextra)
 
 # ---- 1. Import des données --------------------------------
-# Adapter le chemin (ou utiliser Session > Set Working Directory)
+# Adapter le chemin avec setwd()
 univ <- read.csv2("universite.csv", fileEncoding = "latin1", row.names = 1)
 str(univ)
 head(univ)
@@ -23,24 +23,49 @@ rownames(univ) <- c("Droit-SP", "Eco-Gestion", "AES", "Lettres-Arts",
 names(univ)
 
 # ---- 3. Test du chi2 d'indépendance -----------------------
-tab <- as.matrix(univ[, 1:6])
-chi <- chisq.test(tab)
+tab <- as.matrix(univ[, 1:6]) #c'est le tableau sans les colonnes des totaux
+
+chi <- chisq.test(tab) #on fait le test du chi2
 chi                      # X-squared très grand, p-value < 2.2e-16
 sum(tab)                 # effectif total n
-
+#on observe que la p-value est très faible (<0.05) donc on ne peut pas rejeter H_0 (H_0 étant : indépendance des variables)
+#on peut aussi rejeter H_0 avec les ddl ("df" sur le résumé) : on rejette aussi H₀ quand le χ² observé 
+#dépasse la valeur critique (ici 61,7 pour ddl = 45 à 5 %). Les deux méthodes donnent toujours la même conclusion.
 # ---- 4. AFC -----------------------------------------------
 res <- CA(univ, col.sup = 7:12, graph = FALSE)
-
+#on utilise quand même univ parce que ça projette sur les bons axes à la fin (mais les colonnes supplémentaires ne sont pas prises en compte pour le calcul)
 # ---- 5. Valeurs propres / choix du nombre d'axes ----------
 res$eig
+#       Affiche le tableau des valeurs propres, avec pour chaque axe :
+#       eigenvalue : la valeur propre, c'est-à-dire l'inertie expliquée par l'axe ;
+#       percentage of variance : sa part dans l'inertie totale ;
+#       cumulative percentage of variance : le cumul : on regarde quels axes pèsent le plus, ici on peut prendre (1,2) en plan d'étude
+
+
 fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 80))
-# Inertie totale = chi2 / n
+#Trace les percentages of variance de chaque axe
+#addlabels = TRUE écrit le pourcentage au-dessus de chaque barre ;
+#ylim = c(0, 80) fixe l'axe vertical de 0 à 80 %, pour que la barre de 70,7 % tienne dans le graphique.
+
+
+
+# Inertie totale = chi2 / n, si proche de 0 : variables independantes, si proche du V de Cramér : ici, V = √(0,165 / 5) ≈ 0,18,où 5 est le nb d'axes, lien modéré, et si >0,4, lien fort .
 chi$statistic / sum(tab)
 
 # ---- 6. Plan factoriel 1-2 : lignes et colonnes -----------
-fviz_ca_biplot(res, axes = c(1, 2), repel = TRUE)
+
 fviz_ca_row(res, axes = c(1, 2), repel = TRUE)
+#Trace le nuage des lignes (les 10 disciplines) dans le plan formé par les axes 1 et 2. Deux disciplines proches ont des profils proches : mêmes proportions de Licence-F, Licence-H, etc. 
+#C'est ce graphique qui répond à « quelles disciplines ont le même profil d'étudiants ? ».
 fviz_ca_col(res, axes = c(1, 2), repel = TRUE)
+#Trace le nuage des colonnes (Licence-F, Licence-H, Master-F, ...) dans le même plan. 
+#Il montre quelles modalités se ressemblent et comment elles s'opposent 
+#(par exemple femmes en Licence contre hommes en Master sur l'axe 1), donc ils ont pas du tout les memes disciplines.
+fviz_ca_biplot(res, axes = c(1, 2), repel = TRUE)
+#superposition des deux graphes précédents
+#Sur le biplot, Langues et Licence-F sont proches, et cela veut dire : 
+#la discipline Langues est sur-représentée en Licence-F par rapport au profil moyen.
+
 
 # Plan 1-3 (pour les disciplines mal représentées dans le plan 1-2)
 fviz_ca_biplot(res, axes = c(1, 3), repel = TRUE)
