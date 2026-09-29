@@ -54,36 +54,40 @@ chi$statistic / sum(tab)
 
 # ---- 6. Plan factoriel 1-2 : lignes et colonnes -----------
 
-fviz_ca_row(res, axes = c(1, 2), repel = TRUE)
+fviz_ca_row(res, axes = c(1, 2))
 #Trace le nuage des lignes (les 10 disciplines) dans le plan formé par les axes 1 et 2. Deux disciplines proches ont des profils proches : mêmes proportions de Licence-F, Licence-H, etc. 
 #C'est ce graphique qui répond à « quelles disciplines ont le même profil d'étudiants ? ».
-fviz_ca_col(res, axes = c(1, 2), repel = TRUE)
+fviz_ca_col(res, axes = c(1, 2))
 #Trace le nuage des colonnes (Licence-F, Licence-H, Master-F, ...) dans le même plan. 
 #Il montre quelles modalités se ressemblent et comment elles s'opposent 
 #(par exemple femmes en Licence contre hommes en Master sur l'axe 1), donc ils ont pas du tout les memes disciplines.
-fviz_ca_biplot(res, axes = c(1, 2), repel = TRUE)
+fviz_ca_biplot(res, axes = c(1, 2))
 #superposition des deux graphes précédents
 #Sur le biplot, Langues et Licence-F sont proches, et cela veut dire : 
 #la discipline Langues est sur-représentée en Licence-F par rapport au profil moyen.
 
 
 # Plan 1-3 (pour les disciplines mal représentées dans le plan 1-2)
-fviz_ca_biplot(res, axes = c(1, 3), repel = TRUE)
+fviz_ca_biplot(res, axes = c(1, 3))
 
 # ---- 7. Aides à l'interprétation --------------------------
 # Coordonnées
-round(res$row$coord[, 1:3], 3)
+round(res$row$coord[, 1:3], 3)#ça donne les coordonnées sur les axes
 round(res$col$coord[, 1:3], 3)
+#ici l'axe 1 oppose les disciplines littéraires à scientifique et l'axe 2 études longues et études courtes
 
 # Contributions (en %)
-round(res$row$contrib[, 1:3], 1)
-round(res$col$contrib[, 1:3], 1)
+round(res$row$contrib[, 1:3], 1)#ça donne les disciplines qui contribuent le plus à l'inertie
+round(res$col$contrib[, 1:3], 1)#ça donne les catégories qui contribuent le plus à l'inertie
 
 # Qualité de représentation (cos2)
 round(res$row$cos2[, 1:3], 2)
 round(res$col$cos2[, 1:3], 2)
+#« Sciences fondamentales (cos² = 0,98) et Langues (0,79) sont très bien représentées sur l'axe 1, 
+#ce qui permet d'interpréter leur opposition. En revanche, Pluri-lettres (cos² = 0,22 dans le plan 1-2) 
+#est mal représentée : on ne l'interprète pas sur ce plan mais sur l'axe 3. » C'est bien représenté au dessus de 0.5
 
-# Graphiques de contributions / cos2
+# Graphiques de contributions / cos2, version graphique de ce qui précède
 fviz_contrib(res, choice = "row", axes = 1)
 fviz_contrib(res, choice = "row", axes = 2)
 fviz_contrib(res, choice = "col", axes = 1)
