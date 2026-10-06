@@ -154,11 +154,39 @@ cah.ward <- HCPC(acpvoitures, nb.clust=-1)
 # dendrogramme pour fixer le nombre de classes, puis les groupes apparaissent colorés
 # dans le plan de projection de l'ACP)
 
-plot(cah.ward,choice="map")
-plot(cah.ward,choice="3D.map")
-plot(cah.ward,choice="tree")
-plot(cah.ward,choice="bar")
-cah.ward$desc.var
+# Ces lignes utilisent l'objet cah.ward créé par HCPC (et non celui de hclust :
+# les deux portaient le même nom, c'est le dernier créé qui compte).
+# Elles redessinent, une par une, les graphiques que HCPC affiche déjà par défaut,
+# et permettent de décrire les classes obtenues.
+
+# Plan factoriel 1-2 de l'ACP avec les voitures colorées selon leur classe.
+# C'est la "projection des classes dans le plan factoriel 1-2" demandée par l'énoncé.
+# On voit comment les classes se répartissent le long des axes
+# (par exemple : citadines d'un côté, gros véhicules de l'autre, le long de l'axe 1)
+plot(cah.ward, choice="map")
+
+# Même projection, mais en 3D : le dendrogramme est dessiné au-dessus du nuage
+# de points du plan factoriel 1-2. Chaque point est relié à l'arbre, ce qui montre
+# comment les fusions successives regroupent les voitures proches dans le plan
+plot(cah.ward, choice="3D.map")
+
+# Dendrogramme (arbre de la CAH) coloré selon la partition retenue.
+# Chaque branche regroupe des voitures qui se ressemblent ; la hauteur des fusions
+# donne la perte d'inertie intra-classe. Les rectangles/couleurs indiquent
+# où l'arbre a été coupé (nb.clust=-1 avait choisi ce nombre de classes automatiquement)
+plot(cah.ward, choice="tree")
+
+# Diagramme en barres de la perte d'inertie intra-classe (le gain d'inertie) :
+# une barre par niveau de coupure possible. Une grande barre suivie de petites
+# signale un bon endroit pour couper l'arbre. C'est le critère utilisé par HCPC
+# pour choisir automatiquement le nombre de classes
+plot(cah.ward, choice="bar")
+
+# Description des classes par les variables (pas un graphique, une liste de tableaux).
+# $quanti.var : classe les variables selon leur lien avec la partition
+#   (celles qui séparent le mieux les classes ont les p-values les plus faibles)
+# $quanti : pour chaque classe, les variables qui la caractérisent, avec :
+#   - v.test : positif si la moyenne de la classe est supérieure à la
 
 
 #with the missing data
