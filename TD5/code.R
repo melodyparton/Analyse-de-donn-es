@@ -161,6 +161,28 @@ plot(cah.ward,choice="bar")
 cah.ward$desc.var
 
 
+#with the missing data
+#importing data and descriptive statistics
+cars <- read.csv("autos2005_2.csv",sep=";",header = T,dec = ",", row.names = 1,fileEncoding = "ISO-8859-1")
+cars
+str(cars)
+summary(cars)
+pairs(cars)
+cars1<-cars[,2:11] #we do not take power and price variables for the study
+cars1
+
+cars2<-scale(cars1,center = T, scale = T)
+cars.d<- dist(cars2)
+cars.d
+cah.ward<-hclust(cars.d, method = "ward.D2")
+cah.ward
+plot(cah.ward)
+rect.hclust(cah.ward,k=3)
+groupes.cah
+print(sort(groupes.cah))
+
+
+
 
 
 
