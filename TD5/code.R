@@ -209,6 +209,25 @@ rect.hclust(cah.ward,k=3)
 groupes.cah
 print(sort(groupes.cah))
 
+cah.ward$call$X
+cah.ward$data.clust
+cars$puissance
+summary(cars$puissance)
+
+nouvelles_donnees<-cbind(cars$puissance,cah.ward$data.clust) #we paste the initial data with the groups obtained
+nouvelles_donnees
+
+nouvelles_donnes2<- nouvelles_donnees[nouvelles_donnees[,12]=="1"]#we only select the cars in group 1
+nouvelles_donnes2
+summary(nouvelles_donnes2)
+
+#replacing with average value
+mean_puissance<-mean(nouvelles_donnees2[,1],na.rm=TRUE)
+
+#replacing NA values in 'cars$puissance' with the calculated ùean
+nouvelles_donnes2[is.na(nouvelles_donnes2[,1]),1]<- mean_puissance
+nouvelles_donnes2
+
 
 
 
