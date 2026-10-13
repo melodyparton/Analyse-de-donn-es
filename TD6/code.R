@@ -42,22 +42,26 @@ summary(model)
 model <- aov(TUB~site,data=poissons)
 summary(model)
 
+summary(manova(as.matrix(poissons[,2:15])~poissons[,1]),test="wilks")
+library(MASS)
+modell<-lda(site~.,data=poissons)
+modell
+
+
+model2<-lda(site~YEU+BR+OP+NAG+FOI+MUS+POI+LON+LAR+LART+LARM+DYEU,data=poissons)
+model2
+
+
+prev <-lda(site~.,data=poissons,CV=TRUE)$class
+prev
+table(prev, poissons$site)
+
+sum(prev!=poissons$site)/nrow(poissons)
+don1<-data.frame(12,122,78,123,10,310,620,3,72,172,36,45,11,89)
 
 
 
 
-
-
-
-
-par(mfrow = c(3,5))
-for (j in 2:15) {
-  boxplot(poissons[,j] ~ poissons[,1],
-          main = names(poissons)[j],
-          xlab = 'site',
-          ylab = names(poissons)[j]
-}
-par(mfrow = c(1,1)))
 
 # Corrélations entre variables explicatives (colinéarité possible entre
 # les mesures de taille : POI, LON, LART, LAR)
